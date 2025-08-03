@@ -1,0 +1,1 @@
+# Neura Dynamics Assignment - AI Assistant
