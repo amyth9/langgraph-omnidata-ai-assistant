@@ -55,3 +55,16 @@ class RAGNode:
         except Exception as e:
             state.error_message = f"Error in RAG node: {str(e)}"
             return state
+
+    def format_rag_response(self, state: AssistantState) -> str:
+        return format_rag_response(state)
+
+    def get_retrieval_stats(self, state: AssistantState) -> Dict[str, Any]:
+        if not state.rag_result:
+            return {}
+
+        return {
+            "total_chunks": len(state.rag_result.relevant_chunks),
+            "sources": state.rag_result.sources,
+            "query": state.rag_result.query,
+        }

@@ -58,3 +58,6 @@ class WeatherNode:
         except Exception as e:
             state.error_message = f"Error in weather node: {str(e)}"
             return state
+
+    def format_weather_response(self, state: AssistantState) -> str:
+        return format_weather_response(state)
