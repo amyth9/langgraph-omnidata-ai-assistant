@@ -1,8 +1,8 @@
 import time
 from typing import Dict, Any
 from app.graph.state import AssistantState, RAGResult, MessageRole
-from app.graph.tools.retriever_tool import RetrieverTool
-from app.interfaces.llm_interface import LLMInterface
+from app.graph.tools.retriever import RetrieverTool
+from app.interfaces.llm import LLMInterface
 from app.graph.utils import format_rag_response
 
 

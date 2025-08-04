@@ -1,8 +1,8 @@
 import time
 from typing import Dict, Any
 from app.graph.state import AssistantState, WeatherData, MessageRole
-from app.graph.tools.weather_tool import WeatherTool
-from app.interfaces.llm_interface import LLMInterface
+from app.graph.tools.weather import WeatherTool
+from app.interfaces.llm import LLMInterface
 from app.graph.utils import format_weather_response
 
 

@@ -3,7 +3,7 @@ import re
 from typing import Dict, Any, Optional, Tuple
 from requests.structures import CaseInsensitiveDict
 from app.config import config
-from app.interfaces.llm_interface import LLMInterface
+from app.interfaces.llm import LLMInterface
 
 
 class WeatherTool:

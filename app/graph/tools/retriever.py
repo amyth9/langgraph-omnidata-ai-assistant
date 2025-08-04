@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
-from app.interfaces.embeddings_interface import EmbeddingsInterface
-from app.interfaces.qdrant_interface import QdrantInterface
+from app.interfaces.embeddings import EmbeddingsInterface
+from app.interfaces.qdrant import QdrantInterface
 
 
 class RetrieverTool:
