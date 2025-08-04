@@ -41,6 +41,9 @@ def format_weather_response(state: AssistantState) -> str:
     response = f"🌤️ Weather in {weather.city}:\n"
     response += f"• Temperature: {weather.temperature}°C\n"
     response += f"• Conditions: {weather.description.capitalize()}\n"
+    response += f"• Humidity: {weather.humidity}%\n"
+    response += f"• Wind Speed: {weather.wind_speed} m/s\n"
+    response += f"• Pressure: {weather.pressure} hPa"
 
     if state.processing_time:
         response += f"\n\n⏱️ Processing time: {state.processing_time:.2f}s"
@@ -69,12 +72,54 @@ def format_rag_response(state: AssistantState) -> str:
     return response
 
 
+def get_processing_metadata(state: AssistantState) -> Dict[str, Any]:
+    metadata = {
+        "query_type": state.query_type.value if state.query_type else "unknown",
+        "processing_time": state.processing_time,
+        "error_message": state.error_message,
+        "total_messages": len(state.messages),
+    }
+
+    if state.weather_data:
+        metadata["weather_data"] = {
+            "city": state.weather_data.city,
+            "temperature": state.weather_data.temperature,
+            "description": state.weather_data.description,
+        }
+
+    if state.rag_result:
+        metadata["rag_data"] = {
+            "sources": state.rag_result.sources,
+            "chunks_retrieved": len(state.rag_result.relevant_chunks),
+        }
+
+    return metadata
+
+
 def get_response_text(state: AssistantState) -> str:
     for message in reversed(state.messages):
         if message.role == MessageRole.ASSISTANT:
             return message.content
 
     return "No response generated"
+
+
+def validate_state(state: AssistantState) -> bool:
+    if not state.current_query and not state.get_last_user_message():
+        return False
+
+    if state.error_message and not state.weather_data and not state.rag_result:
+        return True
+
+    return True
+
+
+def clear_processing_data(state: AssistantState) -> AssistantState:
+    state.weather_data = None
+    state.rag_result = None
+    state.error_message = None
+    state.processing_time = None
+    return state
 
 
 def get_conversation_summary(state: AssistantState) -> Dict[str, Any]:
