@@ -60,13 +60,25 @@ class LLMInterface:
     async def summarize_weather_data(
         self, weather_data: Dict[str, Any], query: str
     ) -> str:
-        system_prompt = """You are a helpful weather assistant. Provide clear, concise weather information based on the data provided. 
-        Include temperature, conditions, humidity, and wind speed. Be conversational and helpful."""
+        system_prompt = """You are a helpful weather assistant. First, present the weather information in a clear, structured format with each detail on a new line, then provide a conversational answer to the user's query.
+
+Weather Information Format:
+Temperature: XX°C
+Feels like: XX°C  
+Humidity: XX%
+Wind: X.X m/s
+
+Then answer the user's question conversationally. For example:
+- "Is it cold?" → "No, it's quite warm and comfortable"
+- "How's the weather?" → "It's nice and sunny, perfect for outdoor activities"
+- "Should I bring a jacket?" → "You probably won't need one, it's quite warm"
+
+Be helpful, conversational, and provide practical advice based on the weather conditions. Make sure each weather detail is on its own line."""
 
         messages = [
             {
                 "role": "user",
-                "content": f"Query: {query}\nWeather Data: {weather_data}\n\nPlease provide a helpful weather summary.",
+                "content": f"Query: {query}\nWeather Data: {weather_data}\n\nPlease provide the weather information in the structured format with each detail on a new line, then answer the user's question conversationally.",
             }
         ]
 

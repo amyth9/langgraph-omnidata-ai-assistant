@@ -36,6 +36,7 @@ class WeatherNode:
             weather_info = WeatherData(
                 city=weather_data.get("city", "Unknown"),
                 temperature=weather_data.get("temperature", 0),
+                feels_like=weather_data.get("feels_like", 0),
                 description=weather_data.get("description", ""),
                 humidity=weather_data.get("humidity", 0),
                 wind_speed=weather_data.get("wind_speed", 0),

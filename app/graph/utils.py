@@ -38,12 +38,12 @@ def format_weather_response(state: AssistantState) -> str:
 
     weather = state.weather_data
 
-    response = f"🌤️ Weather in {weather.city}:\n"
+    response = f"🌤️ Weather Information:\n"
     response += f"• Temperature: {weather.temperature}°C\n"
-    response += f"• Conditions: {weather.description.capitalize()}\n"
+    response += f"• Feels like: {weather.feels_like}°C\n"
     response += f"• Humidity: {weather.humidity}%\n"
     response += f"• Wind Speed: {weather.wind_speed} m/s\n"
-    response += f"• Pressure: {weather.pressure} hPa"
+    response += f"• Conditions: {weather.description.capitalize()}"
 
     if state.processing_time:
         response += f"\n\n⏱️ Processing time: {state.processing_time:.2f}s"

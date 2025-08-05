@@ -201,15 +201,11 @@ class WeatherTool:
         if "error" in weather_data:
             return f"❌ Error: {weather_data['error']}"
 
-        response = f"🌤️ Weather in {weather_data.get('city', 'Unknown')}:\n"
+        response = f"🌤️ Weather Information:\n"
         response += f"• Temperature: {weather_data.get('temperature', 0)}°C\n"
         response += f"• Feels like: {weather_data.get('feels_like', 0)}°C\n"
-        response += (
-            f"• Conditions: {weather_data.get('description', '').capitalize()}\n"
-        )
         response += f"• Humidity: {weather_data.get('humidity', 0)}%\n"
         response += f"• Wind Speed: {weather_data.get('wind_speed', 0)} m/s\n"
-        response += f"• Pressure: {weather_data.get('pressure', 0)} hPa\n"
-        response += f"• Visibility: {weather_data.get('visibility', 0)}m"
+        response += f"• Conditions: {weather_data.get('description', '').capitalize()}"
 
         return response
