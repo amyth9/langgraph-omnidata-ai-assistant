@@ -20,20 +20,31 @@ class WeatherTool:
 
     async def extract_city_from_query(self, query: str) -> Optional[str]:
         try:
-            system_prompt = """You are a location extractor. Extract the complete location from weather queries.
-            Return the full location including city, state, country if mentioned. If no clear location is mentioned, return 'none'.
-            
-            Examples:
-            - "what are conditions of manali now?" -> "manali"
-            - "weather in London" -> "london"
-            - "temperature in New York" -> "new york"
-            - "how's the weather in Tokyo?" -> "tokyo"
-            - "what's the temperature in Paris?" -> "paris"
-            - "is it raining in Mumbai?" -> "mumbai"
-            - "weather in downtown chicago, illinois" -> "downtown chicago, illinois"
-            - "temperature in bandra west, mumbai, maharashtra" -> "bandra west, mumbai, maharashtra"
-            - "how's weather in times square, new york city" -> "times square, new york city"
-            """
+            system_prompt = """You are a location extractor. Extract ANY location information from weather queries, including landmarks, beaches, parks, neighborhoods, or any place name.
+
+Return the complete location including any descriptive information. If no clear location is mentioned, return 'none'.
+
+Examples:
+- "what are conditions of manali now?" -> "manali"
+- "weather in London" -> "london"
+- "temperature in New York" -> "new york"
+- "how's the weather in Tokyo?" -> "tokyo"
+- "what's the temperature in Paris?" -> "paris"
+- "is it raining in Mumbai?" -> "mumbai"
+- "weather in downtown chicago, illinois" -> "downtown chicago, illinois"
+- "temperature in bandra west, mumbai, maharashtra" -> "bandra west, mumbai, maharashtra"
+- "how's weather in times square, new york city" -> "times square, new york city"
+- "is it safe to travel to marina beach?" -> "marina beach"
+- "weather at central park" -> "central park"
+- "temperature in downtown area" -> "downtown"
+- "how's the weather at the beach?" -> "beach"
+- "conditions at the mall" -> "mall"
+- "weather near the airport" -> "airport"
+- "temperature at the stadium" -> "stadium"
+- "weather in the park" -> "park"
+- "conditions at the shopping center" -> "shopping center"
+
+Extract ANY location reference, not just city names."""
 
             messages = [
                 {
@@ -84,6 +95,56 @@ class WeatherTool:
         if not query_lower or query_lower in ["?", "!", ".", ",", ";", ":", '"', "'"]:
             return None
 
+        # Look for location patterns
+        location_patterns = [
+            r"to\s+([^?]+)",  # "travel to marina beach"
+            r"at\s+([^?]+)",  # "weather at central park"
+            r"in\s+([^?]+)",  # "temperature in downtown"
+            r"near\s+([^?]+)",  # "weather near airport"
+            r"around\s+([^?]+)",  # "conditions around mall"
+            r"([^?]+)\s+weather",  # "marina beach weather"
+            r"([^?]+)\s+temperature",  # "central park temperature"
+            r"([^?]+)\s+conditions",  # "beach conditions"
+        ]
+
+        for pattern in location_patterns:
+            match = re.search(pattern, query_lower)
+            if match:
+                location = match.group(1).strip()
+                if location and len(location) > 2:
+                    return location
+
+        # If no pattern matches, try to extract any capitalized words
+        words = query.split()
+        potential_location_parts = []
+
+        for i, word in enumerate(words):
+            # Skip common words and weather terms
+            if (
+                word.lower() not in weather_keywords
+                and len(word) > 2
+                and word[0].isupper()
+                and not word.endswith("?")
+            ):
+
+                # Collect this word and any following words that might be part of the location
+                location_part = word
+                j = i + 1
+                while (
+                    j < len(words)
+                    and words[j].lower() not in weather_keywords
+                    and not words[j].endswith("?")
+                ):
+                    location_part += " " + words[j]
+                    j += 1
+
+                if location_part and len(location_part) > 2:
+                    potential_location_parts.append(location_part)
+
+        if potential_location_parts:
+            # Return the longest potential location
+            return max(potential_location_parts, key=len)
+
         return query_lower
 
     def get_latitude_longitude(self, city: str) -> Tuple[float, float]:
@@ -124,14 +185,18 @@ class WeatherTool:
             "pune": (18.5204, 73.8567),
             "ahmedabad": (23.0225, 72.5714),
             "jaipur": (26.9124, 75.7873),
+            "london": (51.5074, -0.0799),
             "new york": (40.7128, -74.0060),
-            "london": (51.5074, -0.0796),
             "tokyo": (35.6812, 139.7671),
             "paris": (48.8566, 2.3522),
+            "beijing": (39.9087, 116.3975),
+            "sydney": (-33.8688, 151.2153),
         }
 
         city_lower = city.lower().strip()
-        return fallback_coordinates.get(city_lower, (19.0760, 72.8777))
+        return fallback_coordinates.get(
+            city_lower, (19.0760, 72.8777)
+        )  # Default to Mumbai
 
     def get_weather_data(
         self, city: str, latitude: float, longitude: float
