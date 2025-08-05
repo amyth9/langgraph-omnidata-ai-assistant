@@ -25,7 +25,7 @@ class QdrantConfig(BaseModel):
 
 class GoogleAIConfig(BaseModel):
     api_key: str = Field(default_factory=lambda: os.getenv("GOOGLE_API_KEY", ""))
-    model: str = "gemini-1.5-flash"
+    model: str = "gemini-2.0-flash"
     temperature: float = 0.5
     max_tokens: int = 1000
 
