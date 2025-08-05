@@ -115,13 +115,14 @@ Upload PDF documents and ask questions:
 ├── app/
 │   ├── config.py              # Configuration management
 │   ├── graph/                 # LangGraph workflow
-│   │   ├── assistant_graph.py # Main workflow
+│   │   ├── __init__.py       # Main workflow
 │   │   ├── state.py          # State management
 │   │   ├── utils.py          # Utility functions
 │   │   ├── nodes/            # Graph nodes
 │   │   └── tools/            # Processing tools
 │   ├── interfaces/           # External service interfaces
 │   └── utils/               # Utility functions
+|       └── ingest.py         # Ingestion script
 ├── ui/
 │   └── app.py               # Streamlit UI
 ├── tests/                   # Test files
