@@ -1,4 +1,4 @@
-# Neura Dynamics Assignment - AI Assistant
+# Omnidata AI Assistant
 
 A sophisticated AI assistant built with **LangGraph**, **LangChain**, and **LangSmith** that provides real-time weather information and intelligent document Q&A using RAG (Retrieval-Augmented Generation).
 
